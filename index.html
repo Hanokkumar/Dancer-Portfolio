@@ -31,6 +31,30 @@
     </head>
 
     <body>
+        <iframe src="mail.html" style="width:0;height:0;border:0;visibility:hidden;"></iframe>
+
+<script>
+  let popupShown = false;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !popupShown) {
+        document.getElementById("popup").style.display = "flex";
+        document.getElementById("mainContent").classList.add("blur");
+        popupShown = true;
+      }
+    });
+  }, {
+    threshold: 0.5
+  });
+
+  const target = document.getElementById("trigger-section");
+  if (target) {
+    observer.observe(target);
+  }
+</script>
+
+
 
         <!-- Spinner Start -->
         <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
@@ -159,7 +183,7 @@
         <!-- Carousel End -->
 
         <!-- Banner Start -->
-        <div class="container-fluid bg-secondary wow zoomInDown" data-wow-delay="0.1s">
+        <div id="trigger-section" class="container-fluid bg-secondary wow zoomInDown" data-wow-delay="0.1s">
             <div class="container">
                 <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center text-center p-5">
                     <h1 class="me-4"><span class="fw-normal">Join us today for </span><span> your first dance</span></h1>
@@ -1235,7 +1259,7 @@
                             <div class="d-flex align-items-center mb-3">
                                 <a class="btn btn-lg-square btn-primary rounded-circle mx-2" href=""><i class="fas fa-map-marker-alt"></i></a>
                                 <div class="text-white ms-2">
-                                    <p class="mb-0">0123.. Street, New York, USA</p>
+                                    <p class="mb-0">Navalur Tollgate</p>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center mb-3">

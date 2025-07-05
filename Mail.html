@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome Enquiry Now</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f8ff;
+    }
+
+    .blur {
+      filter: blur(4px);
+      pointer-events: none;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(173, 216, 230, 0.3); /* minimal blue blur */
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .modal {
+      background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
+      border-radius: 14px;
+      padding: 30px 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 400px;
+      text-align: left;
+      position: relative;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      color: #0277bd;
+      font-size: 22px;
+      text-align: center;
+    }
+
+    .modal label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #01579b;
+    }
+
+    .modal input,
+    .modal select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #90caf9;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #ffffffdd;
+      color: #333;
+    }
+
+    .modal button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #0288d1;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .modal button:hover {
+      background-color: #0277bd;
+    }
+
+    .modal button:disabled {
+      background-color: #90caf9;
+      cursor: not-allowed;
+    }
+
+    .success-message {
+      color: green;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    .error-message {
+      color: red;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="mainContent" class="blur">
+    <!-- Main content behind popup -->
+  </div>
+
+  <div class="overlay" id="popup">
+    <div class="modal">
+      <h2>Welcome Enquiry Now</h2>
+      <form id="enquiryForm">
+        <label for="name">Name</label>
+        <input type="text" id="name" required>
+
+        <label for="phone">Phone No</label>
+        <input type="text" id="phone" required>
+
+        <label for="type">Dance Type</label>
+        <select id="type" required>
+          <option value="">-- Select --</option>
+          <option value="Adult">Adult</option>
+          <option value="Kids">Kids</option>
+        </select>
+
+        <button type="submit" id="submitBtn">Submit</button>
+        <div class="success-message" id="successMsg"></div>
+        <div class="error-message" id="errorMsg"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      emailjs.init("A0qq_cO0oIf_yMuf_"); // Your Public Key
+    })();
+
+    const form = document.getElementById("enquiryForm");
+    const successMsg = document.getElementById("successMsg");
+    const errorMsg = document.getElementById("errorMsg");
+    const submitBtn = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      submitBtn.disabled = true;
+      successMsg.textContent = "";
+      errorMsg.textContent = "";
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const type = document.getElementById("type").value;
+
+      if (!name || !phone || !type) {
+        errorMsg.textContent = "All fields are required.";
+        submitBtn.disabled = false;
+        return;
+      }
+
+      const templateParams = {
+        user_name: name,
+        phone_number: phone,
+        user_type: type,
+      };
+
+      emailjs.send("service_3yjjkep", "template_g1xfmhe", templateParams)
+        .then(function(response) {
+          successMsg.textContent = "✅ Enquiry sent successfully!";
+          errorMsg.textContent = "";
+          form.reset();
+          setTimeout(() => {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("mainContent").classList.remove("blur");
+          }, 2000);
+        }, function(error) {
+          errorMsg.textContent = "❌ Failed to send email. Please try again.";
+          successMsg.textContent = "";
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+        });
+    });
+  </script>
+</body>
+</html>
